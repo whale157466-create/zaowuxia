@@ -1,0 +1,44 @@
+/* ===== 造物匣 全局样式 — 清新素雅绿/白/灰主色调 ===== */
+:root {
+  --zao-green: #5b8c5a;
+  --zao-green-light: #7dab7c;
+  --zao-green-bg: #eaf5e9;
+  --zao-green-pale: #f5faf5;
+  --zao-gray: #666666;
+  --zao-gray-light: #999999;
+  --zao-gray-bg: #f5f6f7;
+  --zao-white: #ffffff;
+  --zao-border: #e8e8e8;
+  --zao-danger: #e85d3a;
+  --zao-warning: #f0ad4e;
+  --el-color-primary: #5b8c5a;
+  --el-color-primary-light-3: #7dab7c;
+  --el-color-primary-light-5: #a3c7a2;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #333; background: var(--zao-gray-bg); }
+a { text-decoration: none; color: inherit; }
+
+/* 页面容器 */
+.page-container { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+
+/* Flex 工具 */
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-col { display: flex; flex-direction: column; }
+
+/* 卡片 */
+.zao-card { background: var(--zao-white); border-radius: 12px; padding: 20px; }
+
+/* 金额 */
+.price { color: var(--zao-danger); font-weight: 700; }
+
+/* 标签渐变 */
+.tag-green { color: var(--zao-green); background: var(--zao-green-bg); }
+
+/* 顶部横幅错误 */
+.global-error-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  background: #f56c6c; color: #fff; text-align: center; padding: 8px 16px; font-size: 14px;
+}
