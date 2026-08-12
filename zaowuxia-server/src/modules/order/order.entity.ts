@@ -41,6 +41,9 @@ export class Order {
   @Column({ nullable: true })
   expireAt: Date;
 
+  @Column({ type: 'simple-json', nullable: true })
+  logistics: { company: string; trackingNo: string; traces: { time: string; desc: string }[] };
+
   @CreateDateColumn()
   createdAt: Date;
 }

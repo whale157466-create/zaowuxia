@@ -17,7 +17,9 @@ onMounted(async () => { order.value = await fetchOrderDetail(route.params.id as 
 
 async function handleConfirmReceive() {
   await ElMessageBox.confirm('确认已收到商品？确认后将无法撤销。', '确认收货', { type: 'warning' })
-  await confirmReceive(order.value!.id); ElMessage.success('已确认收货')
+  await confirmReceive(order.value!.id)
+  order.value = await fetchOrderDetail(order.value!.id)
+  ElMessage.success('已确认收货')
 }
 
 function goAfterSales(type: string) { afterSalesVisible.value = false; router.push(`/after-sales/new?orderId=${order.value!.id}&type=${type}`) }

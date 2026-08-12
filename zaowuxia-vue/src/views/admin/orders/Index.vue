@@ -22,11 +22,13 @@ async function handleShip() {
   if (selectedOrder.value?.status === 'cancelled') { ElMessage.error('该订单已退款，无法发货'); return } // E048
   await adminShipOrder(selectedOrder.value!.id, shipForm.value.company, shipForm.value.trackingNo)
   ElMessage.success('发货成功'); shipVisible.value = false
+  orders.value = (await adminFetchOrders({})).list
 }
 async function handleReview(approved: boolean) {
   await ElMessageBox.confirm(`确定${approved ? '通过' : '拒绝'}该售后申请？`, '售后审核') // E050
   await adminReviewAfterSales(selectedOrder.value!.afterSales!.id, approved, reviewReason.value)
   ElMessage.success(approved ? '已通过' : '已拒绝'); reviewVisible.value = false
+  orders.value = (await adminFetchOrders({})).list
 }
 </script>
 

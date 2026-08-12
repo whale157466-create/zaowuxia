@@ -44,4 +44,24 @@ export class OrderController {
     await this.service.save(order);
     return { code: 0, message: '支付成功', data: null };
   }
+
+  /** 确认收货 */
+  @Put('orders/:id/receive')
+  async confirmReceive(@Param('id') id: string) {
+    await this.service.confirmReceive(id);
+    return { code: 0, message: '已确认收货', data: null };
+  }
+
+  /* ==================== 管理端 ==================== */
+
+  @Get('admin/orders')
+  async adminFindAll(@Query() query: any) {
+    return { code: 0, message: 'ok', data: await this.service.adminFindAll(query) };
+  }
+
+  @Post('admin/orders/:id/ship')
+  async adminShip(@Param('id') id: string, @Body() body: { company: string; trackingNo: string }) {
+    await this.service.adminShip(id, body.company, body.trackingNo);
+    return { code: 0, message: '发货成功', data: null };
+  }
 }

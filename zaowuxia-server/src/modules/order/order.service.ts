@@ -108,4 +108,52 @@ export class OrderService {
     order.status = 'cancelled';
     return this.orderRepo.save(order);
   }
+
+  /** 用户确认收货 */
+  async confirmReceive(id: string) {
+    const order = await this.orderRepo.findOne({ where: { id, userId: this.DEMO_USER_ID } });
+    if (!order) throw new BadRequestException('订单不存在');
+    if (order.status !== 'pending_receive') throw new BadRequestException('仅待收货订单可确认收货');
+    order.status = 'completed';
+    // 模拟签收物流轨迹
+    order.logistics = {
+      ...(order.logistics || { company: '顺丰速运', trackingNo: 'SF' + Date.now() }),
+      traces: [
+        ...(order.logistics?.traces || [
+          { time: new Date(Date.now() - 86400000).toISOString(), desc: '已揽件' },
+          { time: new Date(Date.now() - 43200000).toISOString(), desc: '运输中' },
+        ]),
+        { time: new Date().toISOString(), desc: '已签收' },
+      ],
+    };
+    return this.orderRepo.save(order);
+  }
+
+  /** 管理端：订单列表 */
+  async adminFindAll(params: { status?: string; keyword?: string; page?: number; pageSize?: number }) {
+    const where: any = {};
+    if (params.status) where.status = params.status;
+    const [list, total] = await this.orderRepo.findAndCount({
+      where,
+      order: { createdAt: 'DESC' },
+      skip: ((params.page || 1) - 1) * (params.pageSize || 10),
+      take: params.pageSize || 10,
+    });
+    // 关键字搜索（订单号模糊匹配）
+    let filtered = list;
+    if (params.keyword) {
+      filtered = list.filter(o => o.orderNo.includes(params.keyword));
+    }
+    return { list: filtered, total: params.keyword ? filtered.length : total, page: params.page || 1, pageSize: params.pageSize || 10 };
+  }
+
+  /** 管理端：发货 */
+  async adminShip(id: string, company: string, trackingNo: string) {
+    const order = await this.orderRepo.findOne({ where: { id } });
+    if (!order) throw new BadRequestException('订单不存在');
+    if (order.status !== 'pending_ship') throw new BadRequestException('仅待发货订单可发货');
+    order.status = 'pending_receive';
+    order.logistics = { company, trackingNo, traces: [{ time: new Date().toISOString(), desc: '已发货' }] };
+    return this.orderRepo.save(order);
+  }
 }
