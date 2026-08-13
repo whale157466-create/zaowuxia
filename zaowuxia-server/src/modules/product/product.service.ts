@@ -1,7 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import { Product } from './product.entity';
+import { Shop } from '../shop/shop.entity';
 
 const SEED_DATA = [
   { name: '微缩蛋糕·草莓奶油杯', categoryId: 'c1', categoryName: '微缩蛋糕', difficulty: 'beginner', images: ['https://picsum.photos/seed/p1/400/400'], description: '<h3>材料清单</h3><ul><li>超轻粘土 x3色</li><li>树脂杯托 x1</li></ul>', skus: [{ id: 's1a', name: '基础套装', price: 39.9, stock: 50 }, { id: 's1b', name: '豪华套装', price: 69.9, stock: 20 }], status: 'on' },
@@ -13,13 +14,26 @@ const SEED_DATA = [
 ];
 
 @Injectable()
-export class ProductService implements OnModuleInit {
-  constructor(@InjectRepository(Product) private repo: Repository<Product>) {}
+export class ProductService implements OnApplicationBootstrap {
+  constructor(
+    @InjectRepository(Product) private repo: Repository<Product>,
+    @InjectRepository(Shop) private shopRepo: Repository<Shop>,
+  ) {}
 
-  async onModuleInit() {
+  // 用 OnApplicationBootstrap 确保店铺已先播种，商品能正确关联 shopId
+  async onApplicationBootstrap() {
     const count = await this.repo.count();
     if (count === 0) {
-      for (const d of SEED_DATA) { await this.repo.save(this.repo.create(d)); }
+      const shops = await this.shopRepo.find();
+      const clayShop = shops.find(s => s.name.includes('黏土'));
+      const sealShop = shops.find(s => s.name.includes('篆刻'));
+
+      for (const d of SEED_DATA) {
+        let shopId: string | undefined;
+        if (d.categoryId === 'c1') shopId = clayShop?.id; // 微缩蛋糕 → 黏土小铺
+        if (d.categoryId === 'c2') shopId = sealShop?.id; // 篆刻 → 篆刻工艺坊
+        await this.repo.save(this.repo.create({ ...d, shopId }));
+      }
       console.log(`✓ 播种 ${SEED_DATA.length} 件商品`);
     }
   }

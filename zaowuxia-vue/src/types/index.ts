@@ -126,3 +126,56 @@ export interface ApiResponse<T = any> {
 export interface Category {
   id: string; name: string; icon: string
 }
+
+/* ==================== 店铺 ==================== */
+export interface Shop {
+  id: string
+  userId: string
+  name: string
+  description: string
+  logo: string
+  status: 'on' | 'off'
+  createdAt: string
+}
+
+/* ==================== 教程 ==================== */
+export type BloggerType = 'merchant' | 'hobbyist'
+
+/** 博主同款套装单品 */
+export interface BundleItem {
+  productId: string; productName: string; productImage: string
+  skuId: string; skuName: string; price: number; stock: number
+}
+
+/** 博主种草推荐单品 */
+export interface RecommendationItem {
+  productId: string; productName: string; productImage: string
+  skuId: string; skuName: string; price: number
+  shopName: string
+}
+
+/** 算法推荐材料 */
+export interface MaterialItem {
+  productId: string; productName: string; productImage: string
+  skuId: string; skuName: string; price: number
+  reason: string
+}
+
+export interface Tutorial {
+  id: string
+  authorId: string
+  authorName: string
+  authorAvatar: string
+  bloggerType: BloggerType
+  title: string
+  description: string
+  coverImage: string
+  videoUrl: string
+  content: string
+  bundleName?: string
+  bundleItems?: BundleItem[]
+  recommendationItems?: RecommendationItem[]
+  materialItems?: MaterialItem[]
+  status: string
+  createdAt: string
+}

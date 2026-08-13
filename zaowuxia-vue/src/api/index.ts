@@ -5,7 +5,7 @@
  * 并确保 baseURL 指向正确后端地址即可。
  */
 import axios from 'axios'
-import type { ApiResponse, Product, CartItem, Order, Address, Coupon, KitItem, Category, Paginated } from '@/types'
+import type { ApiResponse, Product, CartItem, Order, Address, Coupon, KitItem, Category, Paginated, Tutorial, Shop } from '@/types'
 
 const http = axios.create({ baseURL: '/api', timeout: 15000 })
 
@@ -267,4 +267,32 @@ export async function adminShipOrder(orderId: string, company: string, trackingN
 export async function adminReviewAfterSales(afterSalesId: string, approved: boolean, reason?: string): Promise<void> {
   if (USE_MOCK) return delay(undefined)
   await http.post(`/admin/after-sales/${afterSalesId}/review`, { approved, reason })
+}
+
+/* ============================== 教程 ============================== */
+
+/** 教程列表（可按博主类型筛选） */
+export async function fetchTutorials(bloggerType?: string): Promise<Tutorial[]> {
+  const { data } = await http.get<ApiResponse<Tutorial[]>>('/tutorials', { params: { bloggerType } })
+  return data.data
+}
+
+/** 教程详情（含套装/种草/材料清单） */
+export async function fetchTutorialDetail(id: string): Promise<Tutorial> {
+  const { data } = await http.get<ApiResponse<Tutorial>>(`/tutorials/${id}`)
+  return data.data
+}
+
+/* ============================== 店铺 ============================== */
+
+/** 店铺列表 */
+export async function fetchShops(): Promise<Shop[]> {
+  const { data } = await http.get<ApiResponse<Shop[]>>('/shops')
+  return data.data
+}
+
+/** 店铺详情 */
+export async function fetchShopDetail(id: string): Promise<Shop> {
+  const { data } = await http.get<ApiResponse<Shop>>(`/shops/${id}`)
+  return data.data
 }
