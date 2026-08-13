@@ -19,15 +19,15 @@ function handleLogout() {
 
 <template>
   <el-container style="min-height: 100vh;">
-    <el-aside width="220px" style="background: #2c3e2d; display: flex; flex-direction: column;">
-      <div style="padding: 20px; text-align: center; font-size: 18px; font-weight: 700; color: #eaf5e9;">
+    <el-aside width="220px" style="background: var(--zao-sidebar); display: flex; flex-direction: column;">
+      <div style="padding: var(--zao-space-5); text-align: center; font-size: 18px; font-weight: 700; color: var(--zao-green-pale);">
         造物匣 · 管理后台
       </div>
       <el-menu
         :default-active="route.path"
-        background-color="#2c3e2d"
+        background-color="var(--zao-sidebar)"
         text-color="#a8c8a5"
-        active-text-color="#fff"
+        active-text-color="#f2f7f2"
         @select="(path: string) => router.push(path)"
         style="flex: 1; border-right: none;"
       >
@@ -37,7 +37,7 @@ function handleLogout() {
         </el-menu-item>
       </el-menu>
       <!-- 退出登录：固定在左侧栏底部 -->
-      <div style="padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);">
+      <div style="padding: var(--zao-space-4) var(--zao-space-5); border-top: 1px solid oklch(0.98 0.012 142 / 0.1);">
         <el-button style="width: 100%;" @click="handleLogout">退出登录</el-button>
       </div>
     </el-aside>

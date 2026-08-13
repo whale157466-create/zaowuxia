@@ -28,9 +28,9 @@ async function handleLogin() {
 
 <template>
   <div class="flex-center" style="min-height: 100vh; background: var(--zao-gray-bg);">
-    <div style="width: 380px; background: #fff; border-radius: 12px; padding: 36px; box-shadow: 0 2px 16px rgba(0,0,0,0.08);">
+    <div style="width: 380px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: 36px; box-shadow: var(--zao-shadow-lg);">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="font-size: 24px; font-weight: 700; color: #2c3e2d;">造物匣 · 管理后台</h1>
+        <h1 style="font-size: 24px; font-weight: 700; color: var(--zao-sidebar);">造物匣 · 管理后台</h1>
         <p style="font-size: 13px; color: var(--zao-gray-light); margin-top: 4px;">请使用管理员账号登录</p>
       </div>
 

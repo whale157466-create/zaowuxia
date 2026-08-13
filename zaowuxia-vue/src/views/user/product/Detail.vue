@@ -83,7 +83,7 @@ function toggleFav() { favorited.value = !favorited.value; ElMessage.success(fav
           <!-- M4-7: 收藏 -->
           <div style="margin-top: 16px;">
             <el-button @click="toggleFav">
-              <el-icon><StarFilled v-if="favorited" style="color: #e85d3a;" /><Star v-else /></el-icon>
+              <el-icon><StarFilled v-if="favorited" style="color: var(--zao-danger);" /><Star v-else /></el-icon>
               {{ favorited ? '已收藏' : '收藏' }}
             </el-button>
           </div>
@@ -107,7 +107,7 @@ function toggleFav() { favorited.value = !favorited.value; ElMessage.success(fav
       </div>
 
       <!-- M4-5: 商品详情 -->
-      <div style="margin-top: 24px; background: #fff; border-radius: 12px; padding: 20px;">
+      <div style="margin-top: 24px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: 20px;">
         <h3 style="margin-bottom: 12px;">商品详情</h3>
         <div v-html="product.description" />
       </div>

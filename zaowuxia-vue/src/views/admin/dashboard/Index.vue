@@ -95,7 +95,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
 <template>
   <div v-loading="loading">
     <!-- 时间筛选 -->
-    <div class="flex-between" style="margin-bottom: 20px;">
+    <div class="flex-between" style="margin-bottom: var(--zao-space-5);">
       <h2 style="font-size: 22px; font-weight: 700;">数据看板</h2>
       <el-radio-group v-model="dateRange" @change="loadMockData" size="small">
         <el-radio-button v-for="(v, k) in dateLabels" :key="k" :value="k">{{ v }}</el-radio-button>
@@ -105,7 +105,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
     <!-- ===== 概览卡片 ===== -->
     <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
       <div v-for="card in overviewCards" :key="card.key"
-        style="flex: 1; min-width: 200px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 6px rgba(0,0,0,0.06);">
+        style="flex: 1; min-width: 200px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: var(--zao-space-5); box-shadow: var(--zao-shadow);">
         <div class="flex-between">
           <span style="font-size: 14px; color: var(--zao-gray-light);">{{ card.title }}</span>
           <el-icon :size="22" :color="card.color"><component :is="card.icon" /></el-icon>
@@ -114,7 +114,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
           <span style="font-size: 28px; font-weight: 700;">{{ card.value.toLocaleString() }}</span>
           <span style="font-size: 13px; color: var(--zao-gray-light);">{{ card.unit }}</span>
         </div>
-        <div style="margin-top: 6px; font-size: 13px;" :style="{ color: card.trend >= 0 ? '#67c23a' : '#e85d3a' }">
+        <div style="margin-top: 6px; font-size: 13px;" :style="{ color: card.trend >= 0 ? 'var(--zao-green)' : 'var(--zao-danger)' }">
           {{ card.trend >= 0 ? '↑' : '↓' }} {{ Math.abs(card.trend) }}% 较上期
         </div>
       </div>
@@ -123,13 +123,13 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
     <!-- ===== 图表区：订单趋势 + 分类占比 ===== -->
     <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
       <!-- 订单趋势 — 纯 CSS 柱状图 -->
-      <div style="flex: 2; min-width: 400px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 6px rgba(0,0,0,0.06);">
+      <div style="flex: 2; min-width: 400px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: var(--zao-space-5); box-shadow: var(--zao-shadow);">
         <h4 style="margin-bottom: 16px; font-weight: 500;">近7天订单趋势</h4>
         <div style="display: flex; align-items: flex-end; gap: 12px; height: 200px;">
           <div v-for="d in trendData" :key="d.date"
             style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;">
             <span style="font-size: 11px; color: var(--zao-gray-light);">¥{{ (d.amount / 1000).toFixed(1) }}k</span>
-            <div :style="{ width: '100%', maxWidth: '48px', height: barHeight(d.amount), background: 'linear-gradient(180deg, #5b8c5a, #7dab7c)', borderRadius: '6px 6px 0 0', minHeight: '4px', transition: 'height 0.3s' }" />
+            <div :style="{ width: '100%', maxWidth: '48px', height: barHeight(d.amount), background: 'var(--zao-green)', borderRadius: '6px 6px 0 0', minHeight: '4px' }" />
             <span style="font-size: 11px; color: var(--zao-gray-light);">{{ d.date }}</span>
           </div>
         </div>
@@ -140,7 +140,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
       </div>
 
       <!-- 分类销售占比 -->
-      <div style="flex: 1; min-width: 280px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 6px rgba(0,0,0,0.06);">
+      <div style="flex: 1; min-width: 280px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: var(--zao-space-5); box-shadow: var(--zao-shadow);">
         <h4 style="margin-bottom: 16px; font-weight: 500;">分类销售占比</h4>
         <div style="display: flex; flex-direction: column; gap: 14px;">
           <div v-for="cat in categorySales" :key="cat.name">
@@ -158,7 +158,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
     <!-- ===== 最近订单 + 热门商品 ===== -->
     <div style="display: flex; gap: 16px; flex-wrap: wrap;">
       <!-- 最近订单 -->
-      <div style="flex: 3; min-width: 420px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 6px rgba(0,0,0,0.06);">
+      <div style="flex: 3; min-width: 420px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: var(--zao-space-5); box-shadow: var(--zao-shadow);">
         <div class="flex-between" style="margin-bottom: 12px;">
           <h4 style="font-weight: 500;">最近订单</h4>
           <el-button size="small" link @click="router.push('/admin/orders')">查看全部 →</el-button>
@@ -174,7 +174,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
       </div>
 
       <!-- 热门商品排行 -->
-      <div style="flex: 2; min-width: 260px; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 6px rgba(0,0,0,0.06);">
+      <div style="flex: 2; min-width: 260px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: var(--zao-space-5); box-shadow: var(--zao-shadow);">
         <div class="flex-between" style="margin-bottom: 12px;">
           <h4 style="font-weight: 500;">热门商品 TOP5</h4>
           <el-button size="small" link @click="router.push('/admin/products')">商品管理 →</el-button>
@@ -182,8 +182,8 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <div v-for="p in hotProducts" :key="p.rank"
             style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--zao-border);">
-            <span style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff;"
-              :style="{ background: p.rank === 1 ? '#e85d3a' : p.rank === 2 ? '#f0ad4e' : p.rank === 3 ? '#5b8c5a' : '#999' }">
+            <span style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--zao-surface);"
+              :style="{ background: p.rank === 1 ? 'var(--zao-danger)' : p.rank === 2 ? 'var(--zao-warning)' : p.rank === 3 ? 'var(--zao-green)' : 'var(--zao-gray-light)' }">
               {{ p.rank }}
             </span>
             <div style="flex: 1;">

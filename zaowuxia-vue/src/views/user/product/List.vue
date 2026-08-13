@@ -61,7 +61,7 @@ watch([categoryId, difficulty, sort], load)
       <EmptyState v-if="!loading && list.length === 0" type="search" />
       <div v-else style="display: flex; flex-wrap: wrap; gap: 16px;">
         <div v-for="p in list" :key="p.id"
-          style="flex: 1; min-width: 200px; max-width: 280px; background: #fff; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.06);"
+          style="flex: 1; min-width: 200px; max-width: 280px; background: var(--zao-surface); border-radius: var(--zao-radius); overflow: hidden; cursor: pointer; box-shadow: var(--zao-shadow);"
           @click="router.push(`/products/${p.id}`)">
           <img :src="p.images[0]" style="width: 100%; height: 180px; object-fit: cover;" />
           <div style="padding: 12px;">

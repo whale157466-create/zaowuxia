@@ -1,27 +1,67 @@
-/* ===== 造物匣 全局样式 — 清新素雅绿/白/灰主色调 ===== */
+/* ===== 造物匣 全局样式 — OKLCH 色彩 · 8px 间距 · 品牌染色中性色 ===== */
 :root {
-  --zao-green: #5b8c5a;
-  --zao-green-light: #7dab7c;
-  --zao-green-bg: #eaf5e9;
-  --zao-green-pale: #f5faf5;
-  --zao-gray: #666666;
-  --zao-gray-light: #999999;
-  --zao-gray-bg: #f5f6f7;
-  --zao-white: #ffffff;
-  --zao-border: #e8e8e8;
-  --zao-danger: #e85d3a;
-  --zao-warning: #f0ad4e;
-  --el-color-primary: #5b8c5a;
-  --el-color-primary-light-3: #7dab7c;
-  --el-color-primary-light-5: #a3c7a2;
+  /* —— 品牌绿（hue 142，手工/自然气质）—— */
+  --zao-green: oklch(0.62 0.09 142);
+  --zao-green-strong: oklch(0.55 0.09 142);
+  --zao-green-light: oklch(0.70 0.08 142);
+  --zao-green-bg: oklch(0.96 0.025 142);
+  --zao-green-pale: oklch(0.98 0.012 142);
+
+  /* —— 中性色（带品牌染色，非纯黑/纯白）—— */
+  --zao-ink: oklch(0.32 0.012 142);          /* 主文字，近黑 */
+  --zao-gray: oklch(0.50 0.012 142);         /* 次要文字 */
+  --zao-gray-light: oklch(0.56 0.012 142);   /* 辅助文字（加深至 AA） */
+  --zao-gray-bg: oklch(0.97 0.006 142);      /* 页面背景，近白 */
+  --zao-surface: oklch(0.99 0.004 142);      /* 卡片表面，近白 */
+  --zao-border: oklch(0.91 0.006 142);       /* 分割线/描边 */
+  --zao-sidebar: oklch(0.30 0.028 142);      /* 管理后台侧栏，深绿非纯黑 */
+
+  /* —— 语义色 —— */
+  --zao-danger: oklch(0.63 0.17 28);
+  --zao-warning: oklch(0.76 0.12 75);
+
+  /* —— 8px 间距 token —— */
+  --zao-space-1: 4px;
+  --zao-space-2: 8px;
+  --zao-space-3: 12px;
+  --zao-space-4: 16px;
+  --zao-space-5: 24px;
+  --zao-space-6: 32px;
+  --zao-space-8: 40px;
+
+  /* —— 圆角 token —— */
+  --zao-radius-sm: 6px;
+  --zao-radius: 10px;
+  --zao-radius-lg: 14px;
+
+  /* —— 阴影 token —— */
+  --zao-shadow: 0 1px 2px oklch(0.32 0.012 142 / 0.06), 0 1px 3px oklch(0.32 0.012 142 / 0.06);
+  --zao-shadow-up: 0 -2px 8px oklch(0.32 0.012 142 / 0.06);   /* 底部粘性栏向上投影 */
+  --zao-shadow-lg: 0 2px 16px oklch(0.32 0.012 142 / 0.08);   /* 登录卡片大投影 */
+
+  /* —— Element Plus 主题映射 —— */
+  --el-color-primary: var(--zao-green);
+  --el-color-primary-light-3: var(--zao-green-light);
+  --el-color-primary-light-5: oklch(0.80 0.05 142);
+  --el-color-primary-light-7: oklch(0.90 0.035 142);
+  --el-color-primary-light-8: var(--zao-green-bg);
+  --el-color-primary-light-9: var(--zao-green-pale);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #333; background: var(--zao-gray-bg); }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
+  color: var(--zao-ink);
+  background: var(--zao-gray-bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
 
 /* 页面容器 */
-.page-container { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+.page-container { max-width: 1200px; margin: 0 auto; padding: var(--zao-space-5) var(--zao-space-4); }
 
 /* Flex 工具 */
 .flex-center { display: flex; align-items: center; justify-content: center; }
@@ -29,16 +69,41 @@ a { text-decoration: none; color: inherit; }
 .flex-col { display: flex; flex-direction: column; }
 
 /* 卡片 */
-.zao-card { background: var(--zao-white); border-radius: 12px; padding: 20px; }
+.zao-card {
+  background: var(--zao-surface);
+  border: 1px solid var(--zao-border);
+  border-radius: var(--zao-radius);
+  padding: var(--zao-space-5);
+  transition: box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+}
+.zao-card:hover { border-color: var(--zao-green-light); }
 
 /* 金额 */
 .price { color: var(--zao-danger); font-weight: 700; }
 
-/* 标签渐变 */
-.tag-green { color: var(--zao-green); background: var(--zao-green-bg); }
+/* 标签 */
+.tag-green { color: var(--zao-green-strong); background: var(--zao-green-bg); }
 
 /* 顶部横幅错误 */
 .global-error-banner {
   position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-  background: #f56c6c; color: #fff; text-align: center; padding: 8px 16px; font-size: 14px;
+  background: var(--zao-danger); color: var(--zao-surface); text-align: center;
+  padding: var(--zao-space-2) var(--zao-space-4); font-size: 14px;
+}
+
+/* —— 无障碍：键盘焦点可见 —— */
+:focus-visible {
+  outline: 2px solid var(--zao-green);
+  outline-offset: 2px;
+  border-radius: var(--zao-radius-sm);
+}
+
+/* —— 尊重系统"减少动效"设置 —— */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -57,7 +57,7 @@ async function handlePasswordLogin() {
 
 <template>
   <div class="flex-center" style="min-height: 70vh;">
-    <div style="width: 420px; background: #fff; border-radius: 12px; padding: 36px; box-shadow: 0 2px 16px rgba(0,0,0,0.08);">
+    <div style="width: 420px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: 36px; box-shadow: var(--zao-shadow-lg);">
       <!-- Logo -->
       <div style="text-align: center; margin-bottom: 24px;">
         <h1 style="font-size: 30px; font-weight: 700; color: var(--zao-green);">造物匣</h1>

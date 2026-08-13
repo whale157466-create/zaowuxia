@@ -25,7 +25,7 @@ const difficultyLabels: Record<string, string> = { beginner: '入门', intermedi
     <el-carousel height="280px" style="border-radius: 12px; overflow: hidden;">
       <el-carousel-item v-for="p in featured" :key="p.id" @click="router.push(`/products/${p.id}`)" style="cursor: pointer;">
         <img :src="p.images[0]" style="width: 100%; height: 100%; object-fit: cover;" />
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; background: linear-gradient(transparent, rgba(0,0,0,0.5)); color: #fff;">
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: var(--zao-space-5); background: oklch(0.30 0.012 142 / 0.5); color: var(--zao-surface);">
           <h3 style="font-size: 20px;">{{ p.name }}</h3>
           <p style="font-size: 13px; opacity: 0.8;">{{ p.categoryName }} · {{ difficultyLabels[p.difficulty] }}</p>
         </div>
@@ -38,7 +38,7 @@ const difficultyLabels: Record<string, string> = { beginner: '入门', intermedi
       <div style="display: flex; flex-wrap: wrap; gap: 16px;">
         <div
           v-for="cat in categories" :key="cat.id"
-          style="flex: 1; min-width: 160px; max-width: 200px; background: #fff; border-radius: 12px; padding: 28px 16px; text-align: center; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.06);"
+          style="flex: 1; min-width: 160px; max-width: 200px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: var(--zao-space-5) var(--zao-space-4); text-align: center; cursor: pointer; box-shadow: var(--zao-shadow);"
           @click="router.push({ name: 'products', query: { categoryId: cat.id } })"
         >
           <span style="font-size: 36px;">{{ cat.icon }}</span>
@@ -56,7 +56,7 @@ const difficultyLabels: Record<string, string> = { beginner: '入门', intermedi
       <div style="display: flex; flex-wrap: wrap; gap: 16px;">
         <div
           v-for="t in tutorials" :key="t.id"
-          style="flex: 1; min-width: 200px; max-width: 280px; background: #fff; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.06);"
+          style="flex: 1; min-width: 200px; max-width: 280px; background: var(--zao-surface); border-radius: var(--zao-radius); overflow: hidden; cursor: pointer; box-shadow: var(--zao-shadow);"
           @click="router.push(`/tutorials/${t.id}`)"
         >
           <img :src="t.coverImage" style="width: 100%; height: 140px; object-fit: cover;" />
@@ -75,7 +75,7 @@ const difficultyLabels: Record<string, string> = { beginner: '入门', intermedi
       <div style="display: flex; flex-wrap: wrap; gap: 16px;">
         <div
           v-for="p in featured" :key="p.id"
-          style="flex: 1; min-width: 200px; max-width: 280px; background: #fff; border-radius: 12px; overflow: hidden; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.06);"
+          style="flex: 1; min-width: 200px; max-width: 280px; background: var(--zao-surface); border-radius: var(--zao-radius); overflow: hidden; cursor: pointer; box-shadow: var(--zao-shadow);"
           @click="router.push(`/products/${p.id}`)"
         >
           <img :src="p.images[0]" style="width: 100%; height: 180px; object-fit: cover;" />
