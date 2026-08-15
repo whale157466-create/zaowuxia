@@ -100,7 +100,7 @@ function toggleFav() { favorited.value = !favorited.value; ElMessage.success(fav
       </div>
 
       <!-- M4-4: 一键配齐入口 -->
-      <div style="margin-top: 20px; background: var(--zao-green-pale); border-radius: 12px; padding: 16px;">
+      <div style="margin-top: 20px; background: var(--zao-blue-pale); border-radius: 12px; padding: 16px;">
         <p style="font-weight: 500;">🔧 一键配齐</p>
         <p style="font-size: 13px; color: var(--zao-gray-light);">该项目所需全部材料 + 工具</p>
         <el-button type="primary" link @click="router.push(`/kit/${product.id}`)">查看配齐清单 →</el-button>

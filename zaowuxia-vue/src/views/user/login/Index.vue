@@ -60,7 +60,7 @@ async function handlePasswordLogin() {
     <div style="width: 420px; background: var(--zao-surface); border-radius: var(--zao-radius); padding: 36px; box-shadow: var(--zao-shadow-lg);">
       <!-- Logo -->
       <div style="text-align: center; margin-bottom: 24px;">
-        <h1 style="font-size: 30px; font-weight: 700; color: var(--zao-green);">造物匣</h1>
+        <h1 style="font-size: 30px; font-weight: 700; color: var(--zao-blue);">造物匣</h1>
         <p style="font-size: 14px; color: var(--zao-gray-light); margin-top: 4px;">每个人都是手艺人</p>
       </div>
 
@@ -94,7 +94,7 @@ async function handlePasswordLogin() {
             </el-form-item>
 
             <!-- 提示：管理员入口 -->
-            <div style="background: var(--zao-green-pale); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: var(--zao-green); display: flex; align-items: center; gap: 6px;">
+            <div style="background: var(--zao-blue-pale); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; color: var(--zao-blue); display: flex; align-items: center; gap: 6px;">
               <el-icon><InfoFilled /></el-icon>
               <span>管理员请使用含 <strong>admin</strong> 的账号登录，将自动进入管理后台</span>
             </div>
@@ -109,7 +109,7 @@ async function handlePasswordLogin() {
       <!-- 隐私协议 + 游客 -->
       <div style="text-align: center; font-size: 12px; color: var(--zao-gray-light); margin: 16px 0 12px;">
         登录即表示同意
-        <span style="color: var(--zao-green); cursor: pointer;" @click="privacyVisible = true">《用户协议》《隐私政策》</span>
+        <span style="color: var(--zao-blue); cursor: pointer;" @click="privacyVisible = true">《用户协议》《隐私政策》</span>
       </div>
       <el-button style="width: 100%;" @click="userStore.enterAsGuest(); router.push('/');">游客浏览</el-button>
     </div>

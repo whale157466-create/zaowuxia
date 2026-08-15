@@ -77,7 +77,7 @@ async function handleSubmit() {
     <!-- M7-3: 优惠券 -->
     <div class="zao-card" style="cursor: pointer; display: flex; justify-content: space-between;" @click="couponDialogVisible = true">
       <span style="font-weight: 500;">优惠券</span>
-      <span :style="{ color: selectedCoupon ? 'var(--zao-green)' : 'var(--zao-gray-light)' }">{{ selectedCoupon ? `-¥${selectedCoupon.discount.toFixed(1)}` : '选择优惠券 >' }}</span>
+      <span :style="{ color: selectedCoupon ? 'var(--zao-blue)' : 'var(--zao-gray-light)' }">{{ selectedCoupon ? `-¥${selectedCoupon.discount.toFixed(1)}` : '选择优惠券 >' }}</span>
     </div>
 
     <!-- M7-5: 备注 -->
@@ -86,7 +86,7 @@ async function handleSubmit() {
     <!-- M7-4: 金额汇总 -->
     <div class="zao-card" style="text-align: right;">
       <p style="font-size: 14px; color: var(--zao-gray-light);">商品总额: ¥{{ productAmount.toFixed(1) }}</p>
-      <p v-if="discountAmount > 0" style="font-size: 14px; color: var(--zao-green);">优惠券: -¥{{ discountAmount.toFixed(1) }}</p>
+      <p v-if="discountAmount > 0" style="font-size: 14px; color: var(--zao-blue);">优惠券: -¥{{ discountAmount.toFixed(1) }}</p>
       <p style="font-size: 14px; color: var(--zao-gray-light);">运费: ¥{{ freight.toFixed(1) }}</p>
       <p class="price" style="font-size: 24px; margin-top: 8px;">实付: ¥{{ totalAmount.toFixed(1) }}</p>
     </div>
@@ -97,7 +97,7 @@ async function handleSubmit() {
     <!-- D6: 地址选择弹窗 -->
     <el-dialog v-model="addrDialogVisible" title="选择收货地址" width="460px">
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div v-for="addr in addresses" :key="addr.id" style="border: 1px solid var(--zao-border); border-radius: 8px; padding: 12px; cursor: pointer;" :style="{ borderColor: selectedAddr?.id === addr.id ? 'var(--zao-green)' : '' }" @click="selectedAddr = addr; addrDialogVisible = false">
+        <div v-for="addr in addresses" :key="addr.id" style="border: 1px solid var(--zao-border); border-radius: 8px; padding: 12px; cursor: pointer;" :style="{ borderColor: selectedAddr?.id === addr.id ? 'var(--zao-blue)' : '' }" @click="selectedAddr = addr; addrDialogVisible = false">
           <p style="font-weight: 500;">{{ addr.recipient }} {{ addr.phone }}</p>
           <p style="font-size: 13px; color: var(--zao-gray-light);">{{ addr.province }}{{ addr.city }}{{ addr.district }} {{ addr.detail }}</p>
         </div>
@@ -109,7 +109,7 @@ async function handleSubmit() {
     <el-dialog v-model="couponDialogVisible" title="选择优惠券" width="420px">
       <el-empty v-if="coupons.length === 0" description="暂无可用优惠券" :image-size="80" />
       <div v-else style="display: flex; flex-direction: column; gap: 8px;">
-        <div v-for="cp in coupons" :key="cp.id" style="border: 1px solid var(--zao-border); border-radius: 8px; padding: 12px; cursor: pointer;" :style="{ opacity: new Date(cp.expireAt) < new Date() ? 0.4 : 1, borderColor: selectedCoupon?.id === cp.id ? 'var(--zao-green)' : '' }" @click="selectedCoupon = cp">
+        <div v-for="cp in coupons" :key="cp.id" style="border: 1px solid var(--zao-border); border-radius: 8px; padding: 12px; cursor: pointer;" :style="{ opacity: new Date(cp.expireAt) < new Date() ? 0.4 : 1, borderColor: selectedCoupon?.id === cp.id ? 'var(--zao-blue)' : '' }" @click="selectedCoupon = cp">
           <div class="flex-between"><span style="font-weight: 700;">¥{{ cp.discount }}</span><span style="font-size: 13px; color: var(--zao-gray-light);">满{{ cp.minAmount }}可用</span></div>
           <p style="font-size: 14px;">{{ cp.name }}</p>
           <p style="font-size: 12px; color: var(--zao-gray-light);">{{ new Date(cp.expireAt) < new Date() ? '已过期' : '有效期至 ' + cp.expireAt }}</p>

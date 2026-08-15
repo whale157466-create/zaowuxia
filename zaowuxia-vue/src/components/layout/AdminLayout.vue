@@ -20,14 +20,14 @@ function handleLogout() {
 <template>
   <el-container style="min-height: 100vh;">
     <el-aside width="220px" style="background: var(--zao-sidebar); display: flex; flex-direction: column;">
-      <div style="padding: var(--zao-space-5); text-align: center; font-size: 18px; font-weight: 700; color: var(--zao-green-pale);">
+      <div style="padding: var(--zao-space-5); text-align: center; font-size: 18px; font-weight: 700; color: var(--zao-blue-pale);">
         造物匣 · 管理后台
       </div>
       <el-menu
         :default-active="route.path"
         background-color="var(--zao-sidebar)"
-        text-color="#a8c8a5"
-        active-text-color="#f2f7f2"
+        text-color="#a8c0d8"
+        active-text-color="#f2f6fb"
         @select="(path: string) => router.push(path)"
         style="flex: 1; border-right: none;"
       >

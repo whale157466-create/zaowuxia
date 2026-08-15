@@ -114,7 +114,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
           <span style="font-size: 28px; font-weight: 700;">{{ card.value.toLocaleString() }}</span>
           <span style="font-size: 13px; color: var(--zao-gray-light);">{{ card.unit }}</span>
         </div>
-        <div style="margin-top: 6px; font-size: 13px;" :style="{ color: card.trend >= 0 ? 'var(--zao-green)' : 'var(--zao-danger)' }">
+        <div style="margin-top: 6px; font-size: 13px;" :style="{ color: card.trend >= 0 ? 'var(--zao-blue)' : 'var(--zao-danger)' }">
           {{ card.trend >= 0 ? '↑' : '↓' }} {{ Math.abs(card.trend) }}% 较上期
         </div>
       </div>
@@ -129,7 +129,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
           <div v-for="d in trendData" :key="d.date"
             style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;">
             <span style="font-size: 11px; color: var(--zao-gray-light);">¥{{ (d.amount / 1000).toFixed(1) }}k</span>
-            <div :style="{ width: '100%', maxWidth: '48px', height: barHeight(d.amount), background: 'var(--zao-green)', borderRadius: '6px 6px 0 0', minHeight: '4px' }" />
+            <div :style="{ width: '100%', maxWidth: '48px', height: barHeight(d.amount), background: 'var(--zao-blue)', borderRadius: '6px 6px 0 0', minHeight: '4px' }" />
             <span style="font-size: 11px; color: var(--zao-gray-light);">{{ d.date }}</span>
           </div>
         </div>
@@ -183,7 +183,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
           <div v-for="p in hotProducts" :key="p.rank"
             style="display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--zao-border);">
             <span style="width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--zao-surface);"
-              :style="{ background: p.rank === 1 ? 'var(--zao-danger)' : p.rank === 2 ? 'var(--zao-warning)' : p.rank === 3 ? 'var(--zao-green)' : 'var(--zao-gray-light)' }">
+              :style="{ background: p.rank === 1 ? 'var(--zao-danger)' : p.rank === 2 ? 'var(--zao-warning)' : p.rank === 3 ? 'var(--zao-blue)' : 'var(--zao-gray-light)' }">
               {{ p.rank }}
             </span>
             <div style="flex: 1;">

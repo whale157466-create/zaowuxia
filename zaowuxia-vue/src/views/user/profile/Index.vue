@@ -26,7 +26,7 @@ async function handleLogout() {
   <div style="max-width: 480px; margin: 0 auto;">
     <!-- M11-1: 头像昵称 -->
     <div class="zao-card" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
-      <el-avatar :size="80" :src="userStore.user?.avatar" style="background: var(--zao-green-bg); color: var(--zao-green); font-size: 32px; cursor: pointer;" @click="avatarVisible = true">{{ userStore.user?.nickname?.[0] || 'U' }}</el-avatar>
+      <el-avatar :size="80" :src="userStore.user?.avatar" style="background: var(--zao-blue-bg); color: var(--zao-blue); font-size: 32px; cursor: pointer;" @click="avatarVisible = true">{{ userStore.user?.nickname?.[0] || 'U' }}</el-avatar>
       <p style="font-size: 18px; font-weight: 700; margin-top: 12px; cursor: pointer;" @click="nicknameVisible = true">{{ userStore.user?.nickname || '未登录' }}</p>
       <p style="font-size: 12px; color: var(--zao-gray-light);">点击头像或昵称编辑</p>
     </div>
@@ -44,7 +44,7 @@ async function handleLogout() {
     </div>
 
     <!-- D13: 头像 -->
-    <el-dialog v-model="avatarVisible" title="编辑头像" width="340px"><div style="text-align: center;"><el-avatar :size="100" style="background: var(--zao-green-bg); color: var(--zao-green); font-size: 32px;">{{ userStore.user?.nickname?.[0] }}</el-avatar><div style="margin-top: 16px; display: flex; gap: 12px; justify-content: center;"><el-button size="small">拍照</el-button><el-button size="small">从相册选择</el-button></div></div></el-dialog>
+    <el-dialog v-model="avatarVisible" title="编辑头像" width="340px"><div style="text-align: center;"><el-avatar :size="100" style="background: var(--zao-blue-bg); color: var(--zao-blue); font-size: 32px;">{{ userStore.user?.nickname?.[0] }}</el-avatar><div style="margin-top: 16px; display: flex; gap: 12px; justify-content: center;"><el-button size="small">拍照</el-button><el-button size="small">从相册选择</el-button></div></div></el-dialog>
 
     <!-- D14: 昵称 -->
     <el-dialog v-model="nicknameVisible" title="编辑昵称" width="360px">

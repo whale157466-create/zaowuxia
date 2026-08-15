@@ -68,7 +68,7 @@ function goProduct(productId: string) { router.push(`/products/${productId}`) }
       <div class="zao-card" style="font-size: 14px; line-height: 1.8;" v-html="tutorial.content" />
 
       <!-- ============ 商家博主：博主同款套装 ============ -->
-      <div v-if="tutorial.bloggerType === 'merchant'" class="zao-card" style="border: 1px solid var(--zao-green);">
+      <div v-if="tutorial.bloggerType === 'merchant'" class="zao-card" style="border: 1px solid var(--zao-blue);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <el-tag type="success">博主同款</el-tag>

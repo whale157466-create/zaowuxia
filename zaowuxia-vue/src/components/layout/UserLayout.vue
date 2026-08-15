@@ -26,7 +26,7 @@ function goSearch(keyword: string) {
     <header style="background: var(--zao-white); border-bottom: 1px solid var(--zao-border); position: sticky; top: 0; z-index: 100;">
       <div class="page-container flex-between" style="padding-top: 12px; padding-bottom: 12px;">
         <!-- Logo -->
-        <router-link to="/" style="font-size: 22px; font-weight: 700; color: var(--zao-green);">造物匣</router-link>
+        <router-link to="/" style="font-size: 22px; font-weight: 700; color: var(--zao-blue);">造物匣</router-link>
 
         <!-- 搜索 -->
         <div style="width: 320px;">
@@ -45,11 +45,11 @@ function goSearch(keyword: string) {
           </router-link>
           <router-link to="/orders" class="nav-link">我的订单</router-link>
           <template v-if="isLoggedIn">
-            <router-link v-if="isAdmin" to="/admin" class="nav-link" style="color: var(--zao-green); font-weight: 500;">管理后台</router-link>
+            <router-link v-if="isAdmin" to="/admin" class="nav-link" style="color: var(--zao-blue); font-weight: 500;">管理后台</router-link>
             <router-link to="/profile" class="nav-link">{{ userStore.user?.nickname }}</router-link>
           </template>
           <template v-else>
-            <router-link to="/login" class="nav-link" style="color: var(--zao-green);">登录</router-link>
+            <router-link to="/login" class="nav-link" style="color: var(--zao-blue);">登录</router-link>
           </template>
         </nav>
       </div>
@@ -71,5 +71,5 @@ function goSearch(keyword: string) {
 
 <style scoped>
 .nav-link { font-size: 14px; color: var(--zao-gray); transition: color 0.2s; }
-.nav-link:hover, .router-link-active { color: var(--zao-green) !important; }
+.nav-link:hover, .router-link-active { color: var(--zao-blue) !important; }
 </style>

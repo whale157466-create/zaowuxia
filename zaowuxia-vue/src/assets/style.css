@@ -1,24 +1,25 @@
 /* ===== 造物匣 全局样式 — OKLCH 色彩 · 8px 间距 · 品牌染色中性色 ===== */
 :root {
-  /* —— 品牌绿（hue 142，手工/自然气质）—— */
-  --zao-green: oklch(0.62 0.09 142);
-  --zao-green-strong: oklch(0.55 0.09 142);
-  --zao-green-light: oklch(0.70 0.08 142);
-  --zao-green-bg: oklch(0.96 0.025 142);
-  --zao-green-pale: oklch(0.98 0.012 142);
+  /* —— 品牌蓝（活力天空蓝：提饱和度，制造视觉焦点）—— */
+  --zao-blue: oklch(0.56 0.17 245);
+  --zao-blue-strong: oklch(0.48 0.16 245);
+  --zao-blue-light: oklch(0.72 0.14 245);
+  --zao-blue-bg: oklch(0.95 0.05 245);
+  --zao-blue-pale: oklch(0.97 0.03 245);
 
-  /* —— 中性色（带品牌染色，非纯黑/纯白）—— */
-  --zao-ink: oklch(0.32 0.012 142);          /* 主文字，近黑 */
-  --zao-gray: oklch(0.50 0.012 142);         /* 次要文字 */
-  --zao-gray-light: oklch(0.56 0.012 142);   /* 辅助文字（加深至 AA） */
-  --zao-gray-bg: oklch(0.97 0.006 142);      /* 页面背景，近白 */
-  --zao-surface: oklch(0.99 0.004 142);      /* 卡片表面，近白 */
-  --zao-border: oklch(0.91 0.006 142);       /* 分割线/描边 */
-  --zao-sidebar: oklch(0.30 0.028 142);      /* 管理后台侧栏，深绿非纯黑 */
+  /* —— 中性色（清透近白，提亮度与对比）—— */
+  --zao-ink: oklch(0.30 0.012 240);          /* 主文字，近黑 */
+  --zao-gray: oklch(0.48 0.012 240);         /* 次要文字 */
+  --zao-gray-light: oklch(0.56 0.012 240);   /* 辅助文字（AA） */
+  --zao-gray-bg: oklch(0.985 0.002 240);     /* 页面背景，近白 */
+  --zao-surface: oklch(0.993 0.002 240);     /* 卡片表面，近白 */
+  --zao-white: oklch(0.993 0.002 240);       /* 兼容旧引用，近白 */
+  --zao-border: oklch(0.92 0.006 240);       /* 分割线/描边 */
+  --zao-sidebar: oklch(0.34 0.035 245);      /* 管理后台侧栏，深蓝 */
 
-  /* —— 语义色 —— */
-  --zao-danger: oklch(0.63 0.17 28);
-  --zao-warning: oklch(0.76 0.12 75);
+  /* —— 语义色（高饱和，价格/警示更醒目）—— */
+  --zao-danger: oklch(0.60 0.22 27);
+  --zao-warning: oklch(0.78 0.15 75);
 
   /* —— 8px 间距 token —— */
   --zao-space-1: 4px;
@@ -35,17 +36,17 @@
   --zao-radius-lg: 14px;
 
   /* —— 阴影 token —— */
-  --zao-shadow: 0 1px 2px oklch(0.32 0.012 142 / 0.06), 0 1px 3px oklch(0.32 0.012 142 / 0.06);
-  --zao-shadow-up: 0 -2px 8px oklch(0.32 0.012 142 / 0.06);   /* 底部粘性栏向上投影 */
-  --zao-shadow-lg: 0 2px 16px oklch(0.32 0.012 142 / 0.08);   /* 登录卡片大投影 */
+  --zao-shadow: 0 1px 2px oklch(0.32 0.012 240 / 0.06), 0 1px 3px oklch(0.32 0.012 240 / 0.06);
+  --zao-shadow-up: 0 -2px 8px oklch(0.32 0.012 240 / 0.06);   /* 底部粘性栏向上投影 */
+  --zao-shadow-lg: 0 2px 16px oklch(0.32 0.012 240 / 0.08);   /* 登录卡片大投影 */
 
   /* —— Element Plus 主题映射 —— */
-  --el-color-primary: var(--zao-green);
-  --el-color-primary-light-3: var(--zao-green-light);
-  --el-color-primary-light-5: oklch(0.80 0.05 142);
-  --el-color-primary-light-7: oklch(0.90 0.035 142);
-  --el-color-primary-light-8: var(--zao-green-bg);
-  --el-color-primary-light-9: var(--zao-green-pale);
+  --el-color-primary: var(--zao-blue);
+  --el-color-primary-light-3: var(--zao-blue-light);
+  --el-color-primary-light-5: oklch(0.85 0.07 245);
+  --el-color-primary-light-7: oklch(0.93 0.04 245);
+  --el-color-primary-light-8: var(--zao-blue-bg);
+  --el-color-primary-light-9: var(--zao-blue-pale);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -53,7 +54,10 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', system-ui, sans-serif;
   color: var(--zao-ink);
-  background: var(--zao-gray-bg);
+  background:
+    radial-gradient(1100px 360px at 50% -120px, oklch(0.93 0.06 245 / 0.35), transparent 70%),
+    radial-gradient(900px 420px at 85% 40px, oklch(0.93 0.05 60 / 0.30), transparent 70%),
+    var(--zao-gray-bg);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -76,13 +80,13 @@ img { display: block; max-width: 100%; }
   padding: var(--zao-space-5);
   transition: box-shadow 0.2s ease-out, border-color 0.2s ease-out;
 }
-.zao-card:hover { border-color: var(--zao-green-light); }
+.zao-card:hover { border-color: var(--zao-blue-light); }
 
 /* 金额 */
 .price { color: var(--zao-danger); font-weight: 700; }
 
 /* 标签 */
-.tag-green { color: var(--zao-green-strong); background: var(--zao-green-bg); }
+.tag-blue { color: var(--zao-blue-strong); background: var(--zao-blue-bg); }
 
 /* 顶部横幅错误 */
 .global-error-banner {
@@ -93,7 +97,7 @@ img { display: block; max-width: 100%; }
 
 /* —— 无障碍：键盘焦点可见 —— */
 :focus-visible {
-  outline: 2px solid var(--zao-green);
+  outline: 2px solid var(--zao-blue);
   outline-offset: 2px;
   border-radius: var(--zao-radius-sm);
 }

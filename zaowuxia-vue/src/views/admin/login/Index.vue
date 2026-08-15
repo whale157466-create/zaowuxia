@@ -44,7 +44,7 @@ async function handleLogin() {
         <el-button link @click="router.push('/login')">← 返回统一登录</el-button>
       </div>
 
-      <div style="margin-top: 12px; background: var(--zao-green-pale); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--zao-green); text-align: center;">
+      <div style="margin-top: 12px; background: var(--zao-blue-pale); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--zao-blue); text-align: center;">
         <el-icon><InfoFilled /></el-icon>
         演示账号: <strong>admin</strong>，密码任意
       </div>
