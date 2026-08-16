@@ -6,7 +6,6 @@
     "dev": "nest start --watch",
     "build": "nest build",
     "start": "nest start",
-    "seed": "ts-node src/database/seed.ts",
     "seed:orders": "ts-node src/database/seed-orders.ts"
   },
   "dependencies": {
