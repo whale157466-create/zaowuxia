@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** 地址管理 — M11-4 M11-5 + E015空 */
 import { ref, onMounted } from 'vue'
-import { fetchAddresses } from '@/api'
+import { fetchAddresses, createAddress, updateAddress, deleteAddress } from '@/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Address } from '@/types'
 import EmptyState from '@/components/common/EmptyState.vue'
@@ -12,8 +12,22 @@ const editVisible = ref(false); const editForm = ref<Partial<Address>>({})
 onMounted(async () => { addresses.value = await fetchAddresses(); loading.value = false })
 
 function openEdit(addr?: Address) { editForm.value = addr ? { ...addr } : {}; editVisible.value = true }
-function save() { ElMessage.success('地址已保存'); editVisible.value = false }
-async function handleDelete(id: string) { await ElMessageBox.confirm('确定删除该地址？', '删除', { type: 'warning' }); ElMessage.success('地址已删除') }
+async function save() {
+  const f = editForm.value
+  if (!f.recipient || !f.phone || !f.province || !f.city || !f.district || !f.detail) { ElMessage.warning('请填写完整收货信息'); return }
+  try {
+    if (f.id) { await updateAddress(f.id, f); ElMessage.success('地址已更新') }
+    else { await createAddress({ ...f, isDefault: false }); ElMessage.success('地址已保存') }
+    editVisible.value = false
+    addresses.value = await fetchAddresses()
+  } catch { ElMessage.error('保存失败，请稍后重试') }
+}
+async function handleDelete(id: string) {
+  await ElMessageBox.confirm('确定删除该地址？', '删除', { type: 'warning' })
+  await deleteAddress(id)
+  ElMessage.success('地址已删除')
+  addresses.value = await fetchAddresses()
+}
 </script>
 
 <template>
@@ -28,7 +42,7 @@ async function handleDelete(id: string) { await ElMessageBox.confirm('确定删�
       </div>
     </div>
     <el-dialog v-model="editVisible" :title="editForm.id ? '编辑地址' : '新增地址'" width="480px">
-      <div style="display: flex; flex-direction: column; gap: 12px;"><el-input v-model="editForm.recipient" placeholder="收货人" /><el-input v-model="editForm.phone" placeholder="手机号" /><el-input v-model="editForm.detail" placeholder="详细地址" /></div>
+      <div style="display: flex; flex-direction: column; gap: 12px;"><el-input v-model="editForm.recipient" placeholder="收货人" /><el-input v-model="editForm.phone" placeholder="手机号" /><div style="display: flex; gap: 12px;"><el-input v-model="editForm.province" placeholder="省份" /><el-input v-model="editForm.city" placeholder="城市" /><el-input v-model="editForm.district" placeholder="区县" /></div><el-input v-model="editForm.detail" placeholder="详细地址" /></div>
       <template #footer><el-button @click="editVisible = false">取消</el-button><el-button type="primary" @click="save">保存</el-button></template>
     </el-dialog>
   </div>

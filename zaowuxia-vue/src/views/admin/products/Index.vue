@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** 管理端商品管理 — AM2-1~AM2-9 + D19~D22 + E043~E046 */
 import { ref, onMounted } from 'vue'
-import { adminFetchProducts, adminUpdateProduct, adminBatchUpdateProducts } from '@/api'
+import { adminFetchProducts, adminUpdateProduct, adminBatchUpdateProducts, adminCreateProduct, adminDeleteProduct } from '@/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Product } from '@/types'
 
@@ -11,8 +11,18 @@ const editVisible = ref(false); const stockVisible = ref(false)
 const editForm = ref<Partial<Product>>({})
 // 用独立字段避免可选链赋值问题
 const editPrice = ref(0); const editStock = ref(0)
-const stockForm = ref({ productName: '', currentStock: 0, newStock: 0 })
+const stockForm = ref({ id: '', productName: '', currentStock: 0, newStock: 0 })
 const difficultyLabels: Record<string, string> = { beginner: '入门', intermediate: '进阶', advanced: '高阶' }
+const categoryOptions = [
+  { id: 'c1', name: '微缩蛋糕' },
+  { id: 'c2', name: '篆刻入门' },
+  { id: 'c3', name: '热缩片耳环' },
+]
+const difficultyOptions = [
+  { value: 'beginner', label: '入门' },
+  { value: 'intermediate', label: '进阶' },
+  { value: 'advanced', label: '高阶' },
+]
 
 onMounted(async () => { products.value = (await adminFetchProducts({})).list; loading.value = false })
 
@@ -22,21 +32,48 @@ function openEdit(p?: Product) {
   editStock.value = p?.skus?.[0]?.stock || 0
   editVisible.value = true
 }
-function openStock(p: Product) { stockForm.value = { productName: p.name, currentStock: p.skus[0]?.stock || 0, newStock: p.skus[0]?.stock || 0 }; stockVisible.value = true }
-function saveEdit() { ElMessage.success('商品已保存'); editVisible.value = false }
-function saveStock() {
+function openStock(p: Product) { stockForm.value = { id: p.id, productName: p.name, currentStock: p.skus[0]?.stock || 0, newStock: p.skus[0]?.stock || 0 }; stockVisible.value = true }
+async function refresh() { products.value = (await adminFetchProducts({})).list }
+
+async function saveEdit() {
+  const f = editForm.value
+  if (!f.name) { ElMessage.warning('请填写商品名称'); return }
+  try {
+    const categoryName = categoryOptions.find(c => c.id === f.categoryId)?.name || '未分类'
+    const existing = f.skus?.length ? f.skus : undefined
+    const skus = existing
+      ? existing.map((s, i) => (i === 0 ? { ...s, price: editPrice.value, stock: editStock.value } : s))
+      : [{ id: '', name: '默认规格', price: editPrice.value, stock: editStock.value }]
+    const body = { name: f.name, categoryId: f.categoryId, categoryName, difficulty: f.difficulty, skus }
+    if (f.id) { await adminUpdateProduct(f.id, body); ElMessage.success('商品已保存') }
+    else { await adminCreateProduct(body); ElMessage.success('商品已新增') }
+    editVisible.value = false
+    await refresh()
+  } catch { ElMessage.error('保存失败，请稍后重试') }
+}
+async function saveStock() {
   if (stockForm.value.newStock < 0) { ElMessage.error('请输入有效库存数量'); return } // E044
-  ElMessage.success('库存已更新'); stockVisible.value = false
+  try {
+    const p = products.value.find(x => x.id === stockForm.value.id)
+    if (!p) { ElMessage.error('商品不存在'); return }
+    const skus = p.skus.map((s, i) => (i === 0 ? { ...s, stock: stockForm.value.newStock } : s))
+    await adminUpdateProduct(p.id, { skus })
+    ElMessage.success('库存已更新'); stockVisible.value = false
+    await refresh()
+  } catch { ElMessage.error('更新失败，请稍后重试') }
 }
 async function handleDelete(p: Product) {
   if (p.status === 'on') { ElMessage.warning('该商品正在售卖中，建议先下架再删除'); return } // E045
   await ElMessageBox.confirm(`确定删除 ${p.name}？`, '删除商品', { type: 'warning' })
+  await adminDeleteProduct(p.id)
   ElMessage.success('商品已删除')
+  await refresh()
 }
-async function toggleStatus(row: Product, v: boolean) { await adminUpdateProduct(row.id, { status: v ? 'on' : 'off' }); ElMessage.success(v ? '已上架' : '已下架') }
+async function toggleStatus(row: Product, v: boolean) { await adminUpdateProduct(row.id, { status: v ? 'on' : 'off' }); ElMessage.success(v ? '已上架' : '已下架'); await refresh() }
 async function batchAction(action: string) {
   await ElMessageBox.confirm(`确定对选中 ${selectedIds.value.length} 件商品执行批量${action === 'on' ? '上架' : '下架'}？`, '批量操作')
   await adminBatchUpdateProducts(selectedIds.value, action); ElMessage.success('批量操作完成'); selectedIds.value = []
+  await refresh()
 }
 </script>
 
@@ -65,7 +102,7 @@ async function batchAction(action: string) {
 
     <!-- D19: 编辑商品 -->
     <el-dialog v-model="editVisible" :title="editForm.id ? '编辑商品' : '新增商品'" width="640px">
-      <div style="display: flex; flex-direction: column; gap: 12px;"><el-input v-model="editForm.name" placeholder="商品名称" /><el-select v-model="editForm.categoryId" placeholder="分类" /><el-select v-model="editForm.difficulty" placeholder="难度" /><el-input-number v-model="editPrice" placeholder="售价" /><el-input-number v-model="editStock" placeholder="库存" /></div>
+      <div style="display: flex; flex-direction: column; gap: 12px;"><el-input v-model="editForm.name" placeholder="商品名称" /><el-select v-model="editForm.categoryId" placeholder="分类"><el-option v-for="c in categoryOptions" :key="c.id" :label="c.name" :value="c.id" /></el-select><el-select v-model="editForm.difficulty" placeholder="难度"><el-option v-for="d in difficultyOptions" :key="d.value" :label="d.label" :value="d.value" /></el-select><el-input-number v-model="editPrice" :min="0" placeholder="售价" /><el-input-number v-model="editStock" :min="0" placeholder="库存" /></div>
       <template #footer><el-button @click="editVisible = false">取消</el-button><el-button type="primary" @click="saveEdit">保存</el-button></template>
     </el-dialog>
     <!-- D20: 库存调整 -->

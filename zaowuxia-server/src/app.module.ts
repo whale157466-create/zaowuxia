@@ -9,15 +9,24 @@ import { CouponModule } from './modules/coupon/coupon.module';
 import { AfterSalesModule } from './modules/afterSales/after-sales.module';
 import { ShopModule } from './modules/shop/shop.module';
 import { TutorialModule } from './modules/tutorial/tutorial.module';
+import { FavoriteModule } from './modules/favorite/favorite.module';
+import { HistoryModule } from './modules/history/history.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
-    // SQLite — 零配置，数据库文件自动生成在项目根目录
+    // MySQL — 连接信息从 .env 读取（synchronize 仅开发环境自动建表，生产必须关掉）
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'zaowuxia.db',
+      type: 'mysql',
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '3306', 10),
+      username: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || '',
+      database: process.env.DB_NAME || 'zaowuxia',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true, // 开发环境自动建表，生产要关掉
+      synchronize: true,
+      charset: 'utf8mb4', // 支持中文与 emoji
+      extra: { decimalNumbers: true }, // DECIMAL 返回 number（默认 string，前端 .toFixed() 会报错）
     }),
     AuthModule,
     ProductModule,
@@ -28,6 +37,9 @@ import { TutorialModule } from './modules/tutorial/tutorial.module';
     AfterSalesModule,
     ShopModule,
     TutorialModule,
+    FavoriteModule,
+    HistoryModule,
+    UserModule,
   ],
 })
 export class AppModule {}

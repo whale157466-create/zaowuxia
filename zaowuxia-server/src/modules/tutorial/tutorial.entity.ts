@@ -50,7 +50,7 @@ export class Tutorial {
   @Column({ default: '' })
   videoUrl: string;
 
-  @Column({ type: 'text', default: '' })
+  @Column({ type: 'text', nullable: true })
   content: string;
 
   // ===== 商家博主专属：博主同款套装 =====

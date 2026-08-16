@@ -59,6 +59,11 @@ export class OrderController {
     return { code: 0, message: 'ok', data: await this.service.adminFindAll(query) };
   }
 
+  @Get('admin/dashboard')
+  async adminDashboard(@Query('range') range?: string) {
+    return { code: 0, message: 'ok', data: await this.service.adminDashboard(range as any) };
+  }
+
   @Post('admin/orders/:id/ship')
   async adminShip(@Param('id') id: string, @Body() body: { company: string; trackingNo: string }) {
     await this.service.adminShip(id, body.company, body.trackingNo);

@@ -5,7 +5,7 @@
  * 并确保 baseURL 指向正确后端地址即可。
  */
 import axios from 'axios'
-import type { ApiResponse, Product, CartItem, Order, Address, Coupon, KitItem, Category, Paginated, Tutorial, Shop } from '@/types'
+import type { ApiResponse, Product, CartItem, Order, Address, Coupon, KitItem, Category, Paginated, Tutorial, Shop, Favorite, HistoryItem, DashboardData, User } from '@/types'
 
 const http = axios.create({ baseURL: '/api', timeout: 15000 })
 
@@ -170,6 +170,57 @@ export async function fetchAddresses(): Promise<Address[]> {
   return data.data
 }
 
+/** 新增收货地址 */
+export async function createAddress(body: Partial<Address>): Promise<Address> {
+  const { data } = await http.post<ApiResponse<Address>>('/addresses', body)
+  return data.data
+}
+
+/** 更新收货地址 */
+export async function updateAddress(id: string, body: Partial<Address>): Promise<Address> {
+  const { data } = await http.put<ApiResponse<Address>>(`/addresses/${id}`, body)
+  return data.data
+}
+
+/** 删除收货地址 */
+export async function deleteAddress(id: string): Promise<void> {
+  await http.delete<ApiResponse<null>>(`/addresses/${id}`)
+}
+
+/* ===== 收藏 ===== */
+export async function fetchFavorites(): Promise<Favorite[]> {
+  const { data } = await http.get<ApiResponse<Favorite[]>>('/favorites')
+  return data.data
+}
+export async function addFavorite(productId: string): Promise<void> {
+  await http.post('/favorites', { productId })
+}
+export async function removeFavorite(productId: string): Promise<void> {
+  await http.delete(`/favorites/${productId}`)
+}
+
+/* ===== 浏览记录 ===== */
+export async function fetchHistory(): Promise<HistoryItem[]> {
+  const { data } = await http.get<ApiResponse<HistoryItem[]>>('/history')
+  return data.data
+}
+export async function recordHistory(productId: string): Promise<void> {
+  await http.post('/history', { productId })
+}
+export async function clearHistory(): Promise<void> {
+  await http.delete('/history')
+}
+
+/* ===== 用户信息 ===== */
+export async function fetchProfile(): Promise<User> {
+  const { data } = await http.get<ApiResponse<User>>('/user/profile')
+  return data.data
+}
+export async function updateProfile(body: { nickname?: string; avatar?: string }): Promise<User> {
+  const { data } = await http.put<ApiResponse<User>>('/user/profile', body)
+  return data.data
+}
+
 /** 优惠券列表 */
 export async function fetchCoupons(amount: number): Promise<Coupon[]> {
   if (USE_MOCK) return delay(mockCoupons)
@@ -250,6 +301,17 @@ export async function adminBatchUpdateProducts(ids: string[], action: string): P
   await http.post('/admin/products/batch', { ids, action })
 }
 
+/** 管理端新增商品 */
+export async function adminCreateProduct(body: Partial<Product>): Promise<Product> {
+  const { data } = await http.post<ApiResponse<Product>>('/admin/products', body)
+  return data.data
+}
+
+/** 管理端删除商品 */
+export async function adminDeleteProduct(id: string): Promise<void> {
+  await http.delete<ApiResponse<null>>(`/admin/products/${id}`)
+}
+
 /** 管理端订单列表 */
 export async function adminFetchOrders(params: Record<string, unknown>): Promise<Paginated<Order>> {
   if (USE_MOCK) return delay({ list: mockOrders, total: mockOrders.length, page: 1, pageSize: 10 })
@@ -267,6 +329,12 @@ export async function adminShipOrder(orderId: string, company: string, trackingN
 export async function adminReviewAfterSales(afterSalesId: string, approved: boolean, reason?: string): Promise<void> {
   if (USE_MOCK) return delay(undefined)
   await http.post(`/admin/after-sales/${afterSalesId}/review`, { approved, reason })
+}
+
+/** 管理端数据看板 */
+export async function fetchDashboard(range: string = 'week'): Promise<DashboardData> {
+  const { data } = await http.get<ApiResponse<DashboardData>>('/admin/dashboard', { params: { range } })
+  return data.data
 }
 
 /* ============================== 教程 ============================== */

@@ -72,6 +72,28 @@ export interface CartItem {
   invalid?: boolean
 }
 
+/* ==================== 收藏 ==================== */
+export interface Favorite {
+  id: string
+  productId: string
+  productName: string
+  categoryName: string
+  difficulty: Difficulty
+  price: number
+  image: string
+  status: 'on' | 'off'
+}
+
+/* ==================== 浏览记录 ==================== */
+export interface HistoryItem {
+  id: string
+  productId: string
+  productName: string
+  price: number
+  image: string
+  createdAt: string
+}
+
 /* ==================== 优惠券 ==================== */
 export interface Coupon {
   id: string
@@ -114,6 +136,15 @@ export interface Order {
 /* ==================== 通用 ==================== */
 export interface Paginated<T> {
   list: T[]; total: number; page: number; pageSize: number
+}
+
+/* ==================== 数据看板 ==================== */
+export interface DashboardData {
+  overview: { orders: number; revenue: number; users: number; products: number; orderTrend: number; revenueTrend: number }
+  trend: { date: string; count: number; amount: number }[]
+  categorySales: { name: string; count: number; amount: number; percent: number }[]
+  recentOrders: { orderNo: string; user: string; item: string; amount: number; status: string; time: string }[]
+  hotProducts: { rank: number; name: string; sales: number; amount: number }[]
 }
 
 export interface ApiResponse<T = any> {

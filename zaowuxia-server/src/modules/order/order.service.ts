@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { CartItem } from '../cart/cart.entity';
 import { Product } from '../product/product.entity';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class OrderService {
@@ -13,6 +14,7 @@ export class OrderService {
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectRepository(CartItem) private cartRepo: Repository<CartItem>,
     @InjectRepository(Product) private productRepo: Repository<Product>,
+    @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
   async submit(body: {
@@ -155,5 +157,99 @@ export class OrderService {
     order.status = 'pending_receive';
     order.logistics = { company, trackingNo, traces: [{ time: new Date().toISOString(), desc: '已发货' }] };
     return this.orderRepo.save(order);
+  }
+
+  /** 管理端：数据看板 */
+  async adminDashboard(range: 'today' | 'week' | 'month' = 'week') {
+    const days = range === 'today' ? 1 : range === 'week' ? 7 : 30;
+    const now = Date.now();
+    const curStart = now - days * 86400000;
+    const prevStart = now - 2 * days * 86400000;
+
+    const [allOrders, productCount, userCount] = await Promise.all([
+      this.orderRepo.find(),
+      this.productRepo.count({ where: { status: 'on' } }),
+      this.userRepo.count(),
+    ]);
+
+    const t = (o: Order) => new Date(o.createdAt).getTime();
+    const sum = (list: Order[]) => list.filter(o => o.status !== 'cancelled').reduce((s, o) => s + Number(o.totalAmount || 0), 0);
+
+    const curOrders = allOrders.filter(o => t(o) >= curStart);
+    const prevOrders = allOrders.filter(o => t(o) >= prevStart && t(o) < curStart);
+    const curCount = curOrders.length, prevCount = prevOrders.length;
+    const curRevenue = sum(curOrders), prevRevenue = sum(prevOrders);
+    const orderTrend = prevCount === 0 ? 0 : Math.round(((curCount - prevCount) / prevCount) * 100);
+    const revenueTrend = prevRevenue === 0 ? 0 : Math.round(((curRevenue - prevRevenue) / prevRevenue) * 100);
+
+    // 近7天趋势
+    const trend: { date: string; count: number; amount: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now - i * 86400000);
+      const start = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+      const dayOrders = allOrders.filter(o => { const x = t(o); return x >= start && x < start + 86400000; });
+      trend.push({
+        date: `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
+        count: dayOrders.length,
+        amount: sum(dayOrders),
+      });
+    }
+
+    // 分类销售占比 + 热门商品
+    const validOrders = allOrders.filter(o => o.status !== 'cancelled');
+    const products = await this.productRepo.find();
+    const catMap = new Map<string, { name: string; count: number; amount: number }>();
+    const hotMap = new Map<string, { name: string; sales: number; amount: number }>();
+    for (const o of validOrders) {
+      for (const it of o.items || []) {
+        const p = products.find(x => x.id === it.productId);
+        const catId = p?.categoryId || 'other';
+        if (!catMap.has(catId)) catMap.set(catId, { name: p?.categoryName || '其他', count: 0, amount: 0 });
+        const c = catMap.get(catId)!;
+        c.count += it.quantity || 1;
+        c.amount += Number(it.price || 0) * (it.quantity || 1);
+
+        if (!hotMap.has(it.productName)) hotMap.set(it.productName, { name: it.productName, sales: 0, amount: 0 });
+        const h = hotMap.get(it.productName)!;
+        h.sales += it.quantity || 1;
+        h.amount += Number(it.price || 0) * (it.quantity || 1);
+      }
+    }
+    const totalCatAmount = Array.from(catMap.values()).reduce((s, c) => s + c.amount, 0) || 1;
+    const categorySales = Array.from(catMap.values())
+      .map(c => ({ name: c.name, count: c.count, amount: Math.round(c.amount * 100) / 100, percent: Math.round((c.amount / totalCatAmount) * 100) }))
+      .sort((a, b) => b.amount - a.amount);
+
+    const recentOrders = [...allOrders]
+      .sort((a, b) => t(b) - t(a))
+      .slice(0, 5)
+      .map(o => ({
+        orderNo: o.orderNo,
+        user: o.address?.recipient || '—',
+        item: o.items?.[0]?.productName || '—',
+        amount: Number(o.totalAmount || 0),
+        status: o.status,
+        time: o.createdAt ? `${String(new Date(o.createdAt).getHours()).padStart(2, '0')}:${String(new Date(o.createdAt).getMinutes()).padStart(2, '0')}` : '—',
+      }));
+
+    const hotProducts = Array.from(hotMap.values())
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, 5)
+      .map((h, i) => ({ rank: i + 1, name: h.name, sales: h.sales, amount: Math.round(h.amount * 100) / 100 }));
+
+    return {
+      overview: {
+        orders: curCount,
+        revenue: Math.round(curRevenue * 100) / 100,
+        users: userCount,
+        products: productCount,
+        orderTrend,
+        revenueTrend,
+      },
+      trend,
+      categorySales,
+      recentOrders,
+      hotProducts,
+    };
   }
 }

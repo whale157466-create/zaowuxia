@@ -3,6 +3,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { updateProfile } from '@/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const router = useRouter(); const userStore = useUserStore()
@@ -19,6 +20,15 @@ const menus = [
 async function handleLogout() {
   await ElMessageBox.confirm('确定要退出当前账号吗？', '退出登录', { type: 'warning' })
   userStore.logout(); ElMessage.success('已退出登录'); router.push('/')
+}
+
+async function saveNickname() {
+  const name = nickname.value.trim()
+  if (!name) { ElMessage.warning('昵称不能为空'); return }
+  await updateProfile({ nickname: name })
+  if (userStore.user) userStore.user.nickname = name
+  nicknameVisible.value = false
+  ElMessage.success('昵称已更新')
 }
 </script>
 
@@ -49,7 +59,7 @@ async function handleLogout() {
     <!-- D14: 昵称 -->
     <el-dialog v-model="nicknameVisible" title="编辑昵称" width="360px">
       <el-input v-model="nickname" maxlength="20" show-word-limit placeholder="请输入昵称（最多20字）" />
-      <template #footer><el-button @click="nicknameVisible = false">取消</el-button><el-button type="primary" @click="nicknameVisible = false; ElMessage.success('昵称已更新')">保存</el-button></template>
+      <template #footer><el-button @click="nicknameVisible = false">取消</el-button><el-button type="primary" @click="saveNickname">保存</el-button></template>
     </el-dialog>
   </div>
 </template>

@@ -6,6 +6,7 @@
  */
 import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { fetchDashboard } from '@/api'
 
 const router = useRouter()
 
@@ -17,7 +18,7 @@ const dateLabels: Record<string, string> = { today: '今日', week: '近7天', m
 const overviewCards = ref([
   { key: 'orders',   title: '订单总数', value: 0, unit: '笔', trend: 0, icon: 'Document', color: '#5b8c5a' },
   { key: 'revenue',  title: '销售额',   value: 0, unit: '元', trend: 0, icon: 'Money',   color: '#409eff' },
-  { key: 'users',    title: '新增用户', value: 0, unit: '人', trend: 0, icon: 'User',    color: '#e6a23c' },
+  { key: 'users',    title: '用户总数', value: 0, unit: '人', trend: 0, icon: 'User',    color: '#e6a23c' },
   { key: 'products', title: '在售商品', value: 0, unit: '件', trend: 0, icon: 'Goods',   color: '#67c23a' },
 ])
 
@@ -35,55 +36,27 @@ const hotProducts = ref<any[]>([])
 
 const loading = ref(true)
 
-/* ===== Mock 数据加载 ===== */
-function loadMockData() {
-  // 概览
-  overviewCards.value = [
-    { key: 'orders',   title: '订单总数', value: dateRange.value === 'today' ? 28 : dateRange.value === 'week' ? 186 : 742, unit: '笔', trend: +12, icon: 'Document', color: '#5b8c5a' },
-    { key: 'revenue',  title: '销售额',   value: dateRange.value === 'today' ? 3860 : dateRange.value === 'week' ? 24500 : 98500, unit: '元', trend: +8, icon: 'Money', color: '#409eff' },
-    { key: 'users',    title: '新增用户', value: dateRange.value === 'today' ? 15 : dateRange.value === 'week' ? 103 : 420, unit: '人', trend: +23, icon: 'User', color: '#e6a23c' },
-    { key: 'products', title: '在售商品', value: 56, unit: '件', trend: -2, icon: 'Goods', color: '#67c23a' },
-  ]
-
-  // 订单趋势（近7天）
-  trendData.value = [
-    { date: '07-25', count: 22, amount: 3200 }, { date: '07-26', count: 28, amount: 4100 },
-    { date: '07-27', count: 35, amount: 5800 }, { date: '07-28', count: 30, amount: 4400 },
-    { date: '07-29', count: 26, amount: 3600 }, { date: '07-30', count: 32, amount: 4900 },
-    { date: '07-31', count: 28, amount: 3860 },
-  ]
-  const maxAmount = Math.max(...trendData.value.map(d => d.amount))
-
-  // 分类销售
-  categorySales.value = [
-    { name: '微缩蛋糕', count: 82, amount: 38500, percent: 39 },
-    { name: '篆刻入门', count: 56, amount: 27500, percent: 28 },
-    { name: '热缩片耳环', count: 38, amount: 18800, percent: 19 },
-    { name: '其他手工', count: 24, amount: 13700, percent: 14 },
-  ]
-
-  // 最近订单
-  recentOrders.value = [
-    { orderNo: '202607310001', user: '手工爱好者', item: '微缩蛋糕·草莓奶油杯', amount: 39.9, status: 'pending_ship', time: '10:30' },
-    { orderNo: '202607310002', user: '创意达人', item: '篆刻入门·姓氏印章', amount: 89.0, status: 'pending_payment', time: '10:15' },
-    { orderNo: '202607310003', user: 'DIY小能手', item: '热缩片耳环·星空系列', amount: 49.9, status: 'pending_ship', time: '09:48' },
-    { orderNo: '202607300004', user: '手工爱好者', item: '微缩蛋糕·马卡龙塔', amount: 99.0, status: 'completed', time: '昨天' },
-    { orderNo: '202607300005', user: '创意达人', item: '塑形工具套装', amount: 25.0, status: 'pending_receive', time: '昨天' },
-  ]
-
-  // 热门商品
-  hotProducts.value = [
-    { rank: 1, name: '微缩蛋糕·草莓奶油杯', sales: 128, amount: 5107 },
-    { rank: 2, name: '篆刻入门·姓氏印章', sales: 96, amount: 8544 },
-    { rank: 3, name: '热缩片耳环·星空系列', sales: 74, amount: 3693 },
-    { rank: 4, name: '超轻粘土（3色套装）', sales: 62, amount: 930 },
-    { rank: 5, name: '塑形工具套装', sales: 55, amount: 1375 },
-  ]
-
-  loading.value = false
+/* ===== 从后端加载 ===== */
+async function loadData() {
+  loading.value = true
+  try {
+    const d = await fetchDashboard(dateRange.value)
+    overviewCards.value = [
+      { key: 'orders',   title: '订单总数', value: d.overview.orders, unit: '笔', trend: d.overview.orderTrend, icon: 'Document', color: '#5b8c5a' },
+      { key: 'revenue',  title: '销售额',   value: d.overview.revenue, unit: '元', trend: d.overview.revenueTrend, icon: 'Money', color: '#409eff' },
+      { key: 'users',    title: '用户总数', value: d.overview.users, unit: '人', trend: 0, icon: 'User', color: '#e6a23c' },
+      { key: 'products', title: '在售商品', value: d.overview.products, unit: '件', trend: 0, icon: 'Goods', color: '#67c23a' },
+    ]
+    trendData.value = d.trend
+    categorySales.value = d.categorySales
+    recentOrders.value = d.recentOrders
+    hotProducts.value = d.hotProducts
+  } finally {
+    loading.value = false
+  }
 }
 
-onMounted(loadMockData)
+onMounted(loadData)
 
 const statusLabels: Record<string, string> = { pending_payment: '待付款', pending_ship: '待发货', pending_receive: '待收货', completed: '已完成' }
 
@@ -97,7 +70,7 @@ function barHeight(val: number) { return Math.max(4, (val / Math.max(...trendDat
     <!-- 时间筛选 -->
     <div class="flex-between" style="margin-bottom: var(--zao-space-5);">
       <h2 style="font-size: 22px; font-weight: 700;">数据看板</h2>
-      <el-radio-group v-model="dateRange" @change="loadMockData" size="small">
+      <el-radio-group v-model="dateRange" @change="loadData" size="small">
         <el-radio-button v-for="(v, k) in dateLabels" :key="k" :value="k">{{ v }}</el-radio-button>
       </el-radio-group>
     </div>

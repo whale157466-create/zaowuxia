@@ -2,7 +2,7 @@
 /** 页面4: 商品详情 — M4-1~M4-7 + D3规格确认 D4图片预览 */
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchProductDetail } from '@/api'
+import { fetchProductDetail, fetchFavorites, addFavorite, removeFavorite, recordHistory } from '@/api'
 import { useCartStore } from '@/stores/cart'
 import { ElMessage } from 'element-plus'
 import type { Product } from '@/types'
@@ -22,6 +22,9 @@ onMounted(async () => {
   product.value = await fetchProductDetail(id)
   selectedSkuId.value = product.value.skus[0]?.id || ''
   loading.value = false
+  recordHistory(id) // 记录浏览足迹（不阻塞渲染）
+  const favs = await fetchFavorites()
+  favorited.value = favs.some(f => f.productId === id)
 })
 
 function handleAction(action: 'cart' | 'buy') {
@@ -36,7 +39,11 @@ async function confirmSku() {
   if (buyAction.value === 'cart') { ElMessage.success('已加入购物车') } else { router.push('/checkout') }
 }
 
-function toggleFav() { favorited.value = !favorited.value; ElMessage.success(favorited.value ? '已收藏' : '已取消收藏') }
+async function toggleFav() {
+  if (!product.value) return
+  if (favorited.value) { await removeFavorite(product.value.id); favorited.value = false; ElMessage.success('已取消收藏') }
+  else { await addFavorite(product.value.id); favorited.value = true; ElMessage.success('已收藏') }
+}
 </script>
 
 <template>

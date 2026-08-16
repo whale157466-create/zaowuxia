@@ -1,4 +1,4 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import { Injectable, OnApplicationBootstrap, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import { Product } from './product.entity';
@@ -68,5 +68,64 @@ export class ProductService implements OnApplicationBootstrap {
       productId: p.id, productName: p.name, skuId: p.skus[0]?.id, skuName: p.skus[0]?.name || '',
       price: p.skus[0]?.price || 0, stock: p.skus[0]?.stock || 0, quantity: 1, type: 'material' as const, checked: true,
     }));
+  }
+
+  // ===== 管理端商品 =====
+
+  async adminFindAll(q: { keyword?: string; categoryId?: string; difficulty?: string; status?: string; page?: number; pageSize?: number }) {
+    const where: FindOptionsWhere<Product> = {};
+    if (q.keyword) where.name = Like(`%${q.keyword}%`);
+    if (q.categoryId) where.categoryId = q.categoryId;
+    if (q.difficulty) where.difficulty = q.difficulty;
+    if (q.status) where.status = q.status;
+    const [list, total] = await this.repo.findAndCount({
+      where, order: { createdAt: 'DESC' } as any,
+      skip: ((q.page || 1) - 1) * (q.pageSize || 10), take: q.pageSize || 10,
+    });
+    return { list, total, page: q.page || 1, pageSize: q.pageSize || 10 };
+  }
+
+  async adminCreate(body: Partial<Product>) {
+    if (!body.name) throw new BadRequestException('商品名称不能为空');
+    const skus = (body.skus || []).map((s, i) => ({
+      id: s.id || `sku_${Date.now()}_${i}`,
+      name: s.name || '默认规格',
+      price: Number(s.price) || 0,
+      stock: Number(s.stock) || 0,
+    }));
+    return this.repo.save(this.repo.create({
+      name: body.name,
+      categoryId: body.categoryId || 'c1',
+      categoryName: body.categoryName || '未分类',
+      difficulty: body.difficulty || 'beginner',
+      images: body.images || [],
+      description: body.description || '',
+      skus,
+      shopId: body.shopId || null,
+      status: body.status || 'off', // 新增默认下架，避免直接上架
+    }));
+  }
+
+  async adminUpdate(id: string, body: Partial<Product>) {
+    const product = await this.repo.findOne({ where: { id } });
+    if (!product) throw new BadRequestException('商品不存在');
+    const fields: any = { ...body };
+    delete fields.id;
+    delete fields.createdAt;
+    Object.assign(product, fields);
+    return this.repo.save(product);
+  }
+
+  async adminBatchUpdate(ids: string[], action: string) {
+    if (!ids?.length) throw new BadRequestException('请选择商品');
+    const status = action === 'on' ? 'on' : 'off';
+    await this.repo.update(ids, { status });
+  }
+
+  async adminRemove(id: string) {
+    const product = await this.repo.findOne({ where: { id } });
+    if (!product) throw new BadRequestException('商品不存在');
+    if (product.status === 'on') throw new BadRequestException('请先下架再删除');
+    await this.repo.delete(id);
   }
 }
